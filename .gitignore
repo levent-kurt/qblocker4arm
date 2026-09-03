@@ -17,3 +17,4 @@ xcuserdata/
 *.xcuserstate
 *.xcscmblueprint
 .claude/
+dist/
