@@ -26,7 +26,7 @@ QBlocker's original 2016 codebase (Swift 2, CocoaPods, and dependencies that pre
 
 ## Download
 
-Grab the latest build from the [Releases page](https://github.com/levent-kurt/qblocker4arm/releases).
+Grab the [latest release (v1.2, arm64)](https://github.com/levent-kurt/qblocker4arm/releases/latest) directly, or browse the [Releases page](https://github.com/levent-kurt/qblocker4arm/releases).
 
 Since this build isn't notarized, macOS Gatekeeper will flag it on first launch — right-click (or Control-click) the app and choose **Open** to run it anyway.
 
