@@ -10,6 +10,17 @@ import Cocoa
 
 private func keyDownCallback(proxy: CGEventTapProxy, type: CGEventType, event: CGEvent, refcon: UnsafeMutableRawPointer?) -> Unmanaged<CGEvent>? {
 
+    // macOS disables a tap if its callback doesn't respond quickly enough (the
+    // accessibility introspection below can be slow against some apps' menu
+    // trees). Re-enable it immediately, otherwise CMD+Q silently stops being
+    // intercepted at all until the app is relaunched.
+    guard type != .tapDisabledByTimeout && type != .tapDisabledByUserInput else {
+        if let keyDown = KeyListener.sharedKeyListener.keyDown {
+            CGEvent.tapEnable(tap: keyDown, enable: true)
+        }
+        return Unmanaged<CGEvent>.passUnretained(event)
+    }
+
     // If the command key wasn't used we can pass the event on
     let flags = event.flags
     guard flags.contains(.maskCommand) else {
@@ -64,6 +75,13 @@ private func keyDownCallback(proxy: CGEventTapProxy, type: CGEventType, event: C
 }
 
 private func keyUpCallback(proxy: CGEventTapProxy, type: CGEventType, event: CGEvent, refcon: UnsafeMutableRawPointer?) -> Unmanaged<CGEvent>? {
+
+    guard type != .tapDisabledByTimeout && type != .tapDisabledByUserInput else {
+        if let keyUp = KeyListener.sharedKeyListener.keyUp {
+            CGEvent.tapEnable(tap: keyUp, enable: true)
+        }
+        return Unmanaged<CGEvent>.passUnretained(event)
+    }
 
     // If the command key wasn't used we can pass the event on
     let flags = event.flags

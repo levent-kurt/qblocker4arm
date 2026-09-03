@@ -136,6 +136,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             return
         }
 
+        // Trash (not permanently delete) the original now that the copy in
+        // /Applications is in place, so this behaves like an actual move.
+        try? fileManager.trashItem(at: URL(fileURLWithPath: bundlePath), resultingItemURL: nil)
+
         NSWorkspace.shared.open(URL(fileURLWithPath: destinationPath))
         NSApp.terminate(self)
     }
