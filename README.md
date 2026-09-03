@@ -28,17 +28,17 @@ QBlocker's original 2016 codebase (Swift 2, CocoaPods, and dependencies that pre
 
 Grab the [latest release (v1.2, arm64)](https://github.com/levent-kurt/qblocker4arm/releases/latest) directly, or browse the [Releases page](https://github.com/levent-kurt/qblocker4arm/releases).
 
-Since this build isn't notarized, macOS Gatekeeper will flag it on first launch — right-click (or Control-click) the app and choose **Open** to run it anyway.
+Since this build isn't notarized, macOS Gatekeeper will flag it on first launch — right-click (or Control-click) the app and choose **Open** to run it anyway. If that doesn't work (recent macOS versions often skip straight to "Not Opened" with no Open Anyway option), run this in Terminal instead:
+
+```bash
+xattr -cr ~/Downloads/QBlocker4arm.app
+```
 
 ## Contributing
 
 Any contribution is welcome whether it's reporting bugs, helping with design, fixing typos or getting stuck in with development.
 
 ## Screenshots
-
-### Menu Bar Icon + Menu
-
-![QBlocker Menu](http://i.imgur.com/DqbWTXN.png)
 
 ### Quit Message Demonstration
 
@@ -47,12 +47,3 @@ Any contribution is welcome whether it's reporting bugs, helping with design, fi
 ### Preferences
 
 ![Preferences](https://raw.githubusercontent.com/steve228uk/QBlocker/master/Assets/screenshots/preferences.png)
-
-## I love QBlocker, can I donate?
-
-Neither the original author nor this fork accepts donations — instead please consider donating to one of the following charities:
-
-- **[Stonewall](http://www.stonewall.org.uk/support-stonewall)**
-- **[Shelter](http://www.shelter.org.uk)**
-- **[Epilepsy Action](https://www.epilepsy.org.uk/involved/donations)**
-- **[UNICEF](http://www.unicef.org.uk)**
