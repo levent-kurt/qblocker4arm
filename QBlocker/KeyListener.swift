@@ -179,7 +179,7 @@ class KeyListener {
     /// bundle identifier, kept warm in the background as the frontmost app
     /// changes so the event tap callback never has to do this synchronously.
     private var cmdQCache: [String: Bool] = [:]
-    private let cmdQQueue = DispatchQueue(label: "uk.co.wearecocoon.QBlocker4arm.cmdQCheck")
+    private let cmdQQueue = DispatchQueue(label: "com.leventkurt.app.QBlocker4arm.cmdQCheck")
     private var frontmostAppObserver: NSObjectProtocol?
 
     /**

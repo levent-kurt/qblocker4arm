@@ -13,7 +13,7 @@ struct App: Codable, Equatable {
     /// The name of the app that will be displayed as a label
     var name = ""
 
-    /// The bundle ID of the app. e.g. uk.co.wearecocoon.QBlocker4arm
+    /// The bundle ID of the app. e.g. com.leventkurt.app.QBlocker4arm
     var bundleID = ""
 
 }

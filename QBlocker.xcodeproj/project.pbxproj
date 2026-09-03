@@ -359,7 +359,7 @@
 				INFOPLIST_FILE = QBlocker/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				PRODUCT_BUNDLE_IDENTIFIER = uk.co.wearecocoon.QBlocker4arm;
+				PRODUCT_BUNDLE_IDENTIFIER = com.leventkurt.app.QBlocker4arm;
 				PRODUCT_NAME = QBlocker4arm;
 			};
 			name = Debug;
@@ -373,7 +373,7 @@
 				INFOPLIST_FILE = QBlocker/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				PRODUCT_BUNDLE_IDENTIFIER = uk.co.wearecocoon.QBlocker4arm;
+				PRODUCT_BUNDLE_IDENTIFIER = com.leventkurt.app.QBlocker4arm;
 				PRODUCT_NAME = QBlocker4arm;
 			};
 			name = Release;

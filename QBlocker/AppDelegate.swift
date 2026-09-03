@@ -77,16 +77,19 @@ class AppDelegate: NSObject, NSApplicationDelegate {
      actually create a system-wide keyboard event tap. Missing either one
      leaves the tap silently non-functional with no error.
 
-     Calling CGRequestListenEventAccess() here (rather than just
-     preflighting) registers the app with Input Monitoring so it actually
-     appears in System Settings — without this call it may never show up
-     there at all.
+     CGRequestListenEventAccess() is what registers the app with Input
+     Monitoring so it actually appears in System Settings at all. It's safe
+     to call every launch as long as it's skipped once already granted
+     (CGPreflightListenEventAccess() is checked first) — that avoids
+     re-prompting a user who already said yes, while still registering (and
+     re-registering, if a stale/deleted TCC entry left the app invisible in
+     Settings) on every launch until it's actually granted.
      */
     private func checkPermissionsAndStart() {
-        let promptFlag = kAXTrustedCheckOptionPrompt.takeRetainedValue() as NSString
+        let promptFlag = kAXTrustedCheckOptionPrompt.takeUnretainedValue() as NSString
         let options: CFDictionary = [promptFlag: false] as CFDictionary
         let accessibilityTrusted = AXIsProcessTrustedWithOptions(options)
-        let inputMonitoringTrusted = CGRequestListenEventAccess()
+        let inputMonitoringTrusted = requestOrPreflightInputMonitoring()
 
         guard accessibilityTrusted && inputMonitoringTrusted else {
             NSApp.activate(ignoringOtherApps: true)
@@ -104,11 +107,26 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         startAfterPermissionsGranted()
     }
 
+    private func requestOrPreflightInputMonitoring() -> Bool {
+        if CGPreflightListenEventAccess() {
+            return true
+        }
+        return CGRequestListenEventAccess()
+    }
+
     private func startAfterPermissionsGranted() {
         do {
             try KeyListener.sharedKeyListener.start()
         } catch {
             NSLog("Could not launch listener")
+        }
+
+        // HUDAlert's window/storyboard scene loads lazily on first access.
+        // Force that now, off the CMD+Q hot path, so the first real quit
+        // attempt isn't the one paying for that (occasionally multi-second,
+        // especially on a cold disk cache right after a reboot) load.
+        DispatchQueue.main.async {
+            _ = HUDAlert.sharedHUDAlert
         }
 
         showFirstRunWindowIfRequired()

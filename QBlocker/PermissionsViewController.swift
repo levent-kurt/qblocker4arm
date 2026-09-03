@@ -112,7 +112,7 @@ final class PermissionsViewController: NSViewController {
     }
 
     private func refreshStatuses() {
-        let promptFlag = kAXTrustedCheckOptionPrompt.takeRetainedValue() as NSString
+        let promptFlag = kAXTrustedCheckOptionPrompt.takeUnretainedValue() as NSString
         let options: CFDictionary = [promptFlag: false] as CFDictionary
         let accessibilityGranted = AXIsProcessTrustedWithOptions(options)
         let inputMonitoringGranted = CGPreflightListenEventAccess()
