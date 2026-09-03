@@ -1,0 +1,88 @@
+//
+//  AppDelegate.swift
+//  QBlocker4arm
+//
+//  Created by Stephen Radford on 01/05/2016.
+//  Copyright © 2016 Cocoon Development Ltd. All rights reserved.
+//
+
+import Cocoa
+
+@NSApplicationMain
+class AppDelegate: NSObject, NSApplicationDelegate {
+
+    private var accessibilityWindowController: NSWindowController?
+    private var firstRunWindowController: NSWindowController?
+    private lazy var preferencesWindowController: NSWindowController = {
+        return NSStoryboard(name: "Main", bundle: nil).instantiateController(withIdentifier: "preferences window") as! NSWindowController
+    }()
+
+    class var sharedDelegate: AppDelegate? {
+        return NSApplication.shared.delegate as? AppDelegate
+    }
+
+    // MARK: - Instantiation
+
+    override init() {
+        super.init()
+        UserDefaults.standard.register(defaults: [
+            "accidentalQuits": 0,
+            "firstRunComplete": false,
+            "listMode": 0,
+            "delay": 4
+        ])
+    }
+
+    // MARK: - NSApplicationDelegate
+
+    func applicationDidFinishLaunching(_ aNotification: Notification) {
+
+        let promptFlag = kAXTrustedCheckOptionPrompt.takeRetainedValue() as NSString
+        let myDict: CFDictionary = [promptFlag: false] as CFDictionary
+        if AXIsProcessTrustedWithOptions(myDict) {
+            do {
+                try KeyListener.sharedKeyListener.start()
+            } catch {
+                NSLog("Could not launch listener")
+            }
+
+            showFirstRunWindowIfRequired()
+
+        } else {
+            if let windowController = NSStoryboard(name: "Main", bundle: nil).instantiateController(withIdentifier: "accessibility window") as? NSWindowController {
+                accessibilityWindowController = windowController
+                accessibilityWindowController?.showWindow(self)
+                accessibilityWindowController?.window?.makeKeyAndOrderFront(self)
+            }
+        }
+
+    }
+
+    // MARK: - Actions
+
+    /**
+     Show the first run screen if the NSUserDefault stating it has already be run isn't set
+     */
+    func showFirstRunWindowIfRequired() {
+        guard !UserDefaults.standard.bool(forKey: "firstRunComplete") else {
+            return
+        }
+
+        if let windowController = NSStoryboard(name: "Main", bundle: nil).instantiateController(withIdentifier: "first run window") as? NSWindowController {
+            firstRunWindowController = windowController
+            firstRunWindowController?.showWindow(self)
+            firstRunWindowController?.window?.makeKeyAndOrderFront(self)
+
+            UserDefaults.standard.set(true, forKey: "firstRunComplete")
+        }
+    }
+
+    /**
+     Bring the app into foreground and show the preferences window
+     */
+    func showPreferencesWindow() {
+        NSApplication.shared.activate(ignoringOtherApps: true)
+        self.preferencesWindowController.showWindow(nil)
+    }
+
+}
