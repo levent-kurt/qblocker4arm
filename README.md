@@ -1,4 +1,4 @@
-![QBlocker Icon](https://raw.githubusercontent.com/steve228uk/QBlocker/master/Assets/qblocker-icons/github.png)
+![QBlocker Icon](Assets/qblocker-icons/github.png)
 
 # QBlocker4arm
 
@@ -40,10 +40,18 @@ Any contribution is welcome whether it's reporting bugs, helping with design, fi
 
 ## Screenshots
 
+### Menu Bar Menu
+
+![Menu](Assets/screenshots/menu.png)
+
 ### Quit Message Demonstration
 
-![Quitting](http://i.imgur.com/GDRx911.png)
+![Quitting](Assets/screenshots/quit-demo.png)
 
-### Preferences
+### Preferences — Rules
 
-![Preferences](https://raw.githubusercontent.com/steve228uk/QBlocker/master/Assets/screenshots/preferences.png)
+![Preferences Rules](Assets/screenshots/preferences-rules.png)
+
+### Preferences — Settings
+
+![Preferences Settings](Assets/screenshots/preferences-settings.png)

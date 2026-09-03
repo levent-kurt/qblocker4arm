@@ -16,7 +16,8 @@ class AccessibilityViewController: NSViewController {
             NSWorkspace.shared.open(url)
         }
 
-        // Quit the app
+        // Quit the app — the accessibility trust check only runs at launch,
+        // so the user needs to re-open it after granting permission.
         NSApp.terminate(self)
     }
 
