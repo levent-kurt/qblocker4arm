@@ -38,7 +38,6 @@ class HUDAlert {
     func showHUD(_ delayTime: TimeInterval? = nil) {
 
         guard let screenRect = NSScreen.main?.visibleFrame else {
-            print("Could not get screen frame")
             return
         }
 

@@ -156,7 +156,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         // /Applications is in place, so this behaves like an actual move.
         try? fileManager.trashItem(at: URL(fileURLWithPath: bundlePath), resultingItemURL: nil)
 
-        NSWorkspace.shared.open(URL(fileURLWithPath: destinationPath))
+        // Reveal the moved copy and quit, rather than auto-relaunching from
+        // the new location — jumping straight into another window (like the
+        // permissions checklist) right after this alert is confusing; it's
+        // clearer as two distinct steps: move, then the user opens it.
+        NSWorkspace.shared.activateFileViewerSelecting([URL(fileURLWithPath: destinationPath)])
         NSApp.terminate(self)
     }
 

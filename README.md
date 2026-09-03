@@ -22,6 +22,9 @@ QBlocker's original 2016 codebase (Swift 2, CocoaPods, and dependencies that pre
 - Dropped CocoaPods in favor of no dependency manager at all
 - Replaced the legacy, now crash-prone `LSSharedFileList` Login Items API with the modern `SMAppService`
 - Fixed the "Open System Preferences" flow for the current System Settings app (the old AppleScript pane-reveal approach no longer works)
+- Added an installer-style permissions checklist — the app now also requests **Input Monitoring**, a separate permission from Accessibility introduced in macOS Catalina that's required for the keyboard event tap to actually receive events (missing it left CMD+Q silently unblocked with no error)
+- Made the event tap itself more robust: recovers automatically if macOS disables it for responding too slowly, and no longer does synchronous disk reads or AX menu-tree lookups on the hot path of every keystroke
+- Offers to move itself to `/Applications` on first run if launched from elsewhere (e.g. Downloads), avoiding macOS's App Translocation
 - Project now builds `arm64` only, targeting macOS 13+
 
 ## Download
@@ -33,6 +36,8 @@ Since this build isn't notarized, macOS Gatekeeper will flag it on first launch 
 ```bash
 xattr -cr ~/Downloads/QBlocker4arm.app
 ```
+
+On first launch it'll offer to move itself to `/Applications` (open it again from there afterward), then walk you through granting Accessibility and Input Monitoring — both are required for it to actually intercept CMD+Q. macOS may also show its own native "would like to receive keystrokes" prompt the first time; that's normal, just send it to System Settings (or ignore it and use the app's own window instead) — either way works.
 
 ## Contributing
 

@@ -33,6 +33,7 @@ final class PermissionsViewController: NSViewController {
 
     private var pollTimer: Timer?
     private var rows: [RequiredPermission: PermissionRowView] = [:]
+    private var didGrantAll = false
 
     override func loadView() {
         let containerWidth: CGFloat = 420
@@ -85,6 +86,13 @@ final class PermissionsViewController: NSViewController {
         super.viewWillDisappear()
         pollTimer?.invalidate()
         pollTimer = nil
+
+        // Without both permissions the app can't do anything — if the user
+        // closes this window before granting them, quit instead of leaving
+        // a silent, do-nothing process running in the background.
+        if !didGrantAll {
+            NSApp.terminate(nil)
+        }
     }
 
     @objc private func rowButtonClicked(_ sender: NSButton) {
@@ -115,6 +123,7 @@ final class PermissionsViewController: NSViewController {
         if accessibilityGranted && inputMonitoringGranted {
             pollTimer?.invalidate()
             pollTimer = nil
+            didGrantAll = true
             onAllGranted?()
         }
     }
