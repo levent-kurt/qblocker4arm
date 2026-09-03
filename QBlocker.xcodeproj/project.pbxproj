@@ -13,6 +13,8 @@
 		2832CA3A1CD688E9001D3373 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2832CA391CD688E9001D3373 /* Assets.xcassets */; };
 		2832CA3D1CD688E9001D3373 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2832CA3B1CD688E9001D3373 /* Main.storyboard */; };
 		28437E4E1CD93DE4002E90EF /* KeyListenerError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28437E4D1CD93DE4002E90EF /* KeyListenerError.swift */; };
+		28RP0001PERMISSION0001 /* RequiredPermission.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28RP0002PERMISSION0002 /* RequiredPermission.swift */; };
+		28PV0001PERMVIEW0001 /* PermissionsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28PV0002PERMVIEW0002 /* PermissionsViewController.swift */; };
 		2853B63B1CD92D9700F186CE /* StatusMenuController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2853B63A1CD92D9700F186CE /* StatusMenuController.swift */; };
 		2880C4531CD7B3A000545E1F /* KeyListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2880C4521CD7B3A000545E1F /* KeyListener.swift */; };
 		2883C1E61CDE36B10007AC47 /* FirstRunViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2883C1E41CDE36B10007AC47 /* FirstRunViewController.swift */; };
@@ -23,7 +25,6 @@
 		28A518631CDE91C200BE7ED1 /* ExcludeViewController + NSTableViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28A518621CDE91C200BE7ED1 /* ExcludeViewController + NSTableViewDataSource.swift */; };
 		28A518671CDE997400BE7ED1 /* ExcludeViewController + NSTableViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28A518661CDE997400BE7ED1 /* ExcludeViewController + NSTableViewDelegate.swift */; };
 		28BEB6831CDBE79D00E693D3 /* AccessibilityWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28BEB6811CDBE79D00E693D3 /* AccessibilityWindowController.swift */; };
-		28BEB6881CDBEB8200E693D3 /* AccessibilityViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28BEB6871CDBEB8200E693D3 /* AccessibilityViewController.swift */; };
 		28DEC8041CD950450012B5E3 /* HUDAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28DEC8031CD950450012B5E3 /* HUDAlert.swift */; };
 		28DEC8061CD954EA0012B5E3 /* HUDView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28DEC8051CD954EA0012B5E3 /* HUDView.swift */; };
 		28F40A711CFB61EB006719C8 /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28F40A701CFB61EB006719C8 /* TabBarController.swift */; };
@@ -38,6 +39,8 @@
 		2832CA3C1CD688E9001D3373 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		2832CA3E1CD688E9001D3373 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		28437E4D1CD93DE4002E90EF /* KeyListenerError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyListenerError.swift; sourceTree = "<group>"; };
+		28RP0002PERMISSION0002 /* RequiredPermission.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RequiredPermission.swift; sourceTree = "<group>"; };
+		28PV0002PERMVIEW0002 /* PermissionsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PermissionsViewController.swift; sourceTree = "<group>"; };
 		2853B63A1CD92D9700F186CE /* StatusMenuController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StatusMenuController.swift; sourceTree = "<group>"; };
 		2880C4521CD7B3A000545E1F /* KeyListener.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyListener.swift; sourceTree = "<group>"; };
 		2883C1E41CDE36B10007AC47 /* FirstRunViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FirstRunViewController.swift; sourceTree = "<group>"; };
@@ -48,7 +51,6 @@
 		28A518621CDE91C200BE7ED1 /* ExcludeViewController + NSTableViewDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ExcludeViewController + NSTableViewDataSource.swift"; sourceTree = "<group>"; };
 		28A518661CDE997400BE7ED1 /* ExcludeViewController + NSTableViewDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ExcludeViewController + NSTableViewDelegate.swift"; sourceTree = "<group>"; };
 		28BEB6811CDBE79D00E693D3 /* AccessibilityWindowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccessibilityWindowController.swift; sourceTree = "<group>"; };
-		28BEB6871CDBEB8200E693D3 /* AccessibilityViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccessibilityViewController.swift; sourceTree = "<group>"; };
 		28DEC8031CD950450012B5E3 /* HUDAlert.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HUDAlert.swift; sourceTree = "<group>"; };
 		28DEC8051CD954EA0012B5E3 /* HUDView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HUDView.swift; sourceTree = "<group>"; };
 		28F40A701CFB61EB006719C8 /* TabBarController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
@@ -69,7 +71,6 @@
 			isa = PBXGroup;
 			children = (
 				28BEB6811CDBE79D00E693D3 /* AccessibilityWindowController.swift */,
-				28BEB6871CDBEB8200E693D3 /* AccessibilityViewController.swift */,
 				2883C1E41CDE36B10007AC47 /* FirstRunViewController.swift */,
 			);
 			name = "First Launch";
@@ -120,6 +121,8 @@
 				2880C4521CD7B3A000545E1F /* KeyListener.swift */,
 				28A518601CDE8ADF00BE7ED1 /* KeyListener + Storage.swift */,
 				28437E4D1CD93DE4002E90EF /* KeyListenerError.swift */,
+				28RP0002PERMISSION0002 /* RequiredPermission.swift */,
+				28PV0002PERMVIEW0002 /* PermissionsViewController.swift */,
 				28DEC8031CD950450012B5E3 /* HUDAlert.swift */,
 				28DEC8051CD954EA0012B5E3 /* HUDView.swift */,
 			);
@@ -239,10 +242,11 @@
 				28DEC8041CD950450012B5E3 /* HUDAlert.swift in Sources */,
 				28A5185D1CDE49CD00BE7ED1 /* ExcludeViewController.swift in Sources */,
 				28437E4E1CD93DE4002E90EF /* KeyListenerError.swift in Sources */,
+				28RP0001PERMISSION0001 /* RequiredPermission.swift in Sources */,
+				28PV0001PERMVIEW0001 /* PermissionsViewController.swift in Sources */,
 				2832CA361CD688E9001D3373 /* AppDelegate.swift in Sources */,
 				28A518611CDE8ADF00BE7ED1 /* KeyListener + Storage.swift in Sources */,
 				2883C1E61CDE36B10007AC47 /* FirstRunViewController.swift in Sources */,
-				28BEB6881CDBEB8200E693D3 /* AccessibilityViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -18,15 +18,28 @@ enum ExcludedAppsStore {
         return directory.appendingPathComponent("excludedApps.json")
     }()
 
+    // Cached in memory so the event tap callback (which reads this on every
+    // keystroke) never has to hit disk synchronously — occasional I/O
+    // stalls there risk tripping CGEventTap's response-time timeout.
+    private static var cachedApps: [App]?
+
     static func load() -> [App] {
+        if let cachedApps = cachedApps {
+            return cachedApps
+        }
+
         guard let data = try? Data(contentsOf: fileURL),
             let apps = try? JSONDecoder().decode([App].self, from: data) else {
+                cachedApps = []
                 return []
         }
+
+        cachedApps = apps
         return apps
     }
 
     static func save(_ apps: [App]) {
+        cachedApps = apps
         guard let data = try? JSONEncoder().encode(apps) else {
             return
         }

@@ -11,7 +11,7 @@ import Cocoa
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
 
-    private var accessibilityWindowController: NSWindowController?
+    private var permissionsWindowController: PermissionsWindowController?
     private var firstRunWindowController: NSWindowController?
     private lazy var preferencesWindowController: NSWindowController = {
         return NSStoryboard(name: "Main", bundle: nil).instantiateController(withIdentifier: "preferences window") as! NSWindowController
@@ -37,7 +37,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         relocateToApplicationsFolderIfNeeded()
-        checkAccessibilityTrust()
+        checkPermissionsAndStart()
     }
 
     // MARK: - Actions
@@ -52,6 +52,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
         if let windowController = NSStoryboard(name: "Main", bundle: nil).instantiateController(withIdentifier: "first run window") as? NSWindowController {
             firstRunWindowController = windowController
+            NSApp.activate(ignoringOtherApps: true)
             firstRunWindowController?.showWindow(self)
             firstRunWindowController?.window?.makeKeyAndOrderFront(self)
 
@@ -67,28 +68,43 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         self.preferencesWindowController.showWindow(nil)
     }
 
-    // MARK: - Accessibility
+    // MARK: - Permissions
 
     /**
-     Check whether accessibility is trusted. Toggling accessibility for an
-     already-running process in System Settings doesn't reliably update
-     AXIsProcessTrustedWithOptions for that same process without a relaunch,
-     so rather than polling indefinitely, the accessibility window asks the
-     user to re-open the app once they've granted it.
+     Check whether both Accessibility and Input Monitoring are granted.
+     Both are required — Accessibility to read a frontmost app's menu bar,
+     Input Monitoring (a separate permission since macOS Catalina) to
+     actually create a system-wide keyboard event tap. Missing either one
+     leaves the tap silently non-functional with no error.
+
+     Calling CGRequestListenEventAccess() here (rather than just
+     preflighting) registers the app with Input Monitoring so it actually
+     appears in System Settings — without this call it may never show up
+     there at all.
      */
-    private func checkAccessibilityTrust() {
+    private func checkPermissionsAndStart() {
         let promptFlag = kAXTrustedCheckOptionPrompt.takeRetainedValue() as NSString
         let options: CFDictionary = [promptFlag: false] as CFDictionary
+        let accessibilityTrusted = AXIsProcessTrustedWithOptions(options)
+        let inputMonitoringTrusted = CGRequestListenEventAccess()
 
-        guard AXIsProcessTrustedWithOptions(options) else {
-            if let windowController = NSStoryboard(name: "Main", bundle: nil).instantiateController(withIdentifier: "accessibility window") as? NSWindowController {
-                accessibilityWindowController = windowController
-                accessibilityWindowController?.showWindow(self)
-                accessibilityWindowController?.window?.makeKeyAndOrderFront(self)
+        guard accessibilityTrusted && inputMonitoringTrusted else {
+            NSApp.activate(ignoringOtherApps: true)
+            let windowController = PermissionsWindowController.make { [weak self] in
+                self?.permissionsWindowController?.close()
+                self?.permissionsWindowController = nil
+                self?.startAfterPermissionsGranted()
             }
+            permissionsWindowController = windowController
+            windowController.showWindow(self)
+            windowController.window?.makeKeyAndOrderFront(self)
             return
         }
 
+        startAfterPermissionsGranted()
+    }
+
+    private func startAfterPermissionsGranted() {
         do {
             try KeyListener.sharedKeyListener.start()
         } catch {

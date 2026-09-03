@@ -10,9 +10,8 @@ import Cocoa
 
 private func keyDownCallback(proxy: CGEventTapProxy, type: CGEventType, event: CGEvent, refcon: UnsafeMutableRawPointer?) -> Unmanaged<CGEvent>? {
 
-    // macOS disables a tap if its callback doesn't respond quickly enough (the
-    // accessibility introspection below can be slow against some apps' menu
-    // trees). Re-enable it immediately, otherwise CMD+Q silently stops being
+    // macOS disables a tap if its callback doesn't respond quickly enough.
+    // Re-enable it immediately, otherwise CMD+Q silently stops being
     // intercepted at all until the app is relaunched.
     guard type != .tapDisabledByTimeout && type != .tapDisabledByUserInput else {
         if let keyDown = KeyListener.sharedKeyListener.keyDown {
@@ -54,20 +53,33 @@ private func keyDownCallback(proxy: CGEventTapProxy, type: CGEventType, event: C
         }
     }
 
-    // check that the app has CMD Q enabled
-    guard KeyListener.cmdQActiveForApp(app) else {
+    // Check that the app has CMD Q enabled. This is answered from a cache
+    // kept warm in the background (see KeyListener.cachedCmdQActive) rather
+    // than walking the app's AX menu tree synchronously here — that walk can
+    // be slow enough against some apps (Chromium/Electron-based ones
+    // especially) to blow past CGEventTap's response-time budget, which gets
+    // the whole tap disabled and lets that keystroke straight through
+    // unblocked.
+    guard KeyListener.sharedKeyListener.cachedCmdQActive(for: app) else {
         return nil
     }
 
+    // Showing the HUD is real window-server work (window creation, layout);
+    // doing it synchronously here risks the same tap-disabling timeout as
+    // the AX lookups above. Dispatch it off instead.
     if KeyListener.sharedKeyListener.canQuit && KeyListener.sharedKeyListener.tries <= KeyListener.delay {
-        HUDAlert.sharedHUDAlert.showHUD(1)
+        DispatchQueue.main.async {
+            HUDAlert.sharedHUDAlert.showHUD(1)
+        }
     }
 
     KeyListener.sharedKeyListener.tries += 1
     if KeyListener.sharedKeyListener.tries > KeyListener.delay {
         KeyListener.sharedKeyListener.tries = 0
         KeyListener.sharedKeyListener.canQuit = false
-        HUDAlert.sharedHUDAlert.dismissHUD(false)
+        DispatchQueue.main.async {
+            HUDAlert.sharedHUDAlert.dismissHUD(false)
+        }
         return Unmanaged<CGEvent>.passUnretained(event)
     }
 
@@ -102,7 +114,9 @@ private func keyUpCallback(proxy: CGEventTapProxy, type: CGEventType, event: CGE
     if KeyListener.sharedKeyListener.tries <= KeyListener.delay {
         KeyListener.sharedKeyListener.logAccidentalQuit()
     } else {
-        HUDAlert.sharedHUDAlert.dismissHUD()
+        DispatchQueue.main.async {
+            HUDAlert.sharedHUDAlert.dismissHUD()
+        }
     }
 
     KeyListener.sharedKeyListener.tries = 0
@@ -161,6 +175,13 @@ class KeyListener {
         return Set(apps.map { $0.bundleID })
     }
 
+    /// Cached "does this app have CMD+Q wired to quit" results, keyed by
+    /// bundle identifier, kept warm in the background as the frontmost app
+    /// changes so the event tap callback never has to do this synchronously.
+    private var cmdQCache: [String: Bool] = [:]
+    private let cmdQQueue = DispatchQueue(label: "uk.co.wearecocoon.QBlocker4arm.cmdQCheck")
+    private var frontmostAppObserver: NSObjectProtocol?
+
     /**
      Start the keyDown and keyUp listeners.
 
@@ -194,6 +215,57 @@ class KeyListener {
             CFRunLoopAddSource(CFRunLoopGetCurrent(), keyUpRunLoopSource, .commonModes)
         }
 
+        frontmostAppObserver = NSWorkspace.shared.notificationCenter.addObserver(
+            forName: NSWorkspace.didActivateApplicationNotification,
+            object: nil,
+            queue: .main
+        ) { [weak self] notification in
+            guard let app = notification.userInfo?[NSWorkspace.applicationUserInfoKey] as? NSRunningApplication else {
+                return
+            }
+            self?.warmCmdQCache(for: app)
+        }
+
+        if let frontmostApp = NSWorkspace.shared.frontmostApplication {
+            warmCmdQCache(for: frontmostApp)
+        }
+
+    }
+
+    /**
+     Look up (or, if not yet cached, kick off a background compute for and
+     default to trusting) whether CMD+Q is wired to quit for the given app.
+
+     - parameter app: The app to check
+
+     - returns: Whether CMD+Q should be treated as active for this app
+     */
+    func cachedCmdQActive(for app: NSRunningApplication) -> Bool {
+        guard let bundleId = app.bundleIdentifier else {
+            return true
+        }
+
+        if let cached = cmdQCache[bundleId] {
+            return cached
+        }
+
+        // Not cached yet — warm it for next time, and default to "protected"
+        // in the meantime rather than risk a synchronous AX call here.
+        warmCmdQCache(for: app)
+        return true
+    }
+
+    private func warmCmdQCache(for app: NSRunningApplication) {
+        guard let bundleId = app.bundleIdentifier else {
+            return
+        }
+
+        cmdQQueue.async { [weak self] in
+            let active = KeyListener.cmdQActiveForApp(app)
+            DispatchQueue.main.async {
+                self?.cmdQCache[bundleId] = active
+            }
+        }
     }
 
     /**
